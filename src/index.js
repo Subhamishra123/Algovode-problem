@@ -1,10 +1,12 @@
 const express=require('express')
 const app= express()
 const {PORT}=require('../src/config/server.config')
+const apiRouter = require('../src/routes/index')
 const bodyParser=require('body-parser')
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.text())
+app.use('/api',apiRouter)
 app.get('/ping',(request,response)=>{
     return response.json({message:"ping ok"})
 })
