@@ -5,11 +5,15 @@ function errorHandler(error,request,response,next)
 {
     if(error instanceof BaseError)
     {
+        
         return response.status(error.statusCode).json({
             "status":false,
             "message":error.message,
-            "error":error.details,
-            "data":{}
+            "error":error.name,
+            "details":error.details,
+            "data":{
+                statuscode:error.statusCode,
+            }
         })
     }
     else{

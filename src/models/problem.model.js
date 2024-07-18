@@ -19,9 +19,7 @@ const problemSchema=new mongoose.Schema({
         input:{
             type:String,
             required:true
-        }
-    },
-    {
+        },
         output:{
             type:String,
             required:true
@@ -29,8 +27,7 @@ const problemSchema=new mongoose.Schema({
     }
    ],
    editorial:{
-    type:String,
-    required:true
+    type:String
    }
 
 }) 

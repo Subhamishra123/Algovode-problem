@@ -1,34 +1,94 @@
-const {StatusCodes}=require('http-status-codes')
-const NotImplementedError=require('../errors/not.implemented.error')
+const {ProblemService} = require('../services')
+const {ProblemRepository} =require('../repositories')
+const {StatusCodes} = require('http-status-codes')
+const problemService = new ProblemService(new ProblemRepository())
+
 function pingController(request,response)
 {
     return response.status(StatusCodes.ACCEPTED).json({message:'problem controller is up'})
 }
-function getProblem(request,response)
+async function getProblem(request,response,next)
 {
-    return response.status(StatusCodes.NOT_IMPLEMENTED).json({message:'not implemented'})
+   try {
+      const problem = await problemService.retreiveProblem(request.params.id)
+      return response.status(StatusCodes.ACCEPTED).json({
+         success:true,
+         message:`succesfully retreived problem with id ${request.params.id}`,
+         error:{},
+         data:problem
+      })
+   } catch (error) {
+      console.log('problemid?',error)
+      next(error)
+   }
 }
-function getProblems(request,response)
+async function getProblems(request,response,next)
 {
-    return response.status(StatusCodes.NOT_IMPLEMENTED).json({message:'not implemented'})
+   // return response.status(StatusCodes.NOT_IMPLEMENTED).json({message:'not implemented'})
+   try {
+      const problems = await problemService.retreiveAllProblems()
+      return response.status(StatusCodes.OK).json({
+         success:true,
+        message:'succesfully retreives all problems',
+        error:{},
+        data:problems
+      })
+   } catch (error) {
+      console.log(error)
+      next(error)
+   }
 }
-function addProblem(request,response)
+async function addProblem(request,response,next)
 {
+    
     try {
-        throw new NotImplementedError('Add Problem')
+      
+       const problem = await problemService.saveProblem(request.body)
+      
+       return response.status(StatusCodes.CREATED).json({
+        success:true,
+        message:'succesfully created a new problem',
+        error:{},
+        data:problem
+       })
+
     } catch (error) {
-        console.log(error)
+        console.log("controller-",error)
         next(error)
     }
     //return response.status(StatusCodes.NOT_IMPLEMENTED).json({message:'not implemented'})
 }
-function deleteProblem(request,response)
+async function deleteProblem(request,response,next)
 {
-    return response.status(StatusCodes.NOT_IMPLEMENTED).json({message:'not implemented'})
+   try {
+      const problem=await problemService.removeProblem(request.params.id)
+      return response.status(StatusCodes.ACCEPTED).json({
+         success:true,
+         message:'succesfully deleted an existing problem',
+         error:{},
+         data:problem
+      })
+   } catch (error) {
+      console.log(error)
+      next(error)
+   }
+   // return response.status(StatusCodes.NOT_IMPLEMENTED).json({message:'not implemented'})
 }
-function updateProblem(request,response)
+async function updateProblem(request,response,next)
 {
-    return response.status(StatusCodes.NOT_IMPLEMENTED).json({message:'not implemented'})
+   try {
+      let problem=await problemService.modifyProblem(request.params.id,request.body)
+      problem=await problemService.retreiveProblem(request.params.id)
+      return response.status(StatusCodes.ACCEPTED).json({
+         success:true,
+         message:'succesfully updated an existing problem',
+         error:{},
+         data:problem
+      })
+   } catch (error) {
+      console.log(error)
+        next(error)
+   }
 }
 module.exports={
     pingController,

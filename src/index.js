@@ -1,4 +1,6 @@
 const express=require('express')
+// const dotEnv=require('dotenv')
+// dotEnv.config()
 const errorHandler=require('./utils/errorHandler')
 const connectToDb=require('./config/db.config')
 const app= express()
@@ -15,6 +17,8 @@ app.get('/ping',(request,response)=>{
 app.use(errorHandler)
 app.listen(PORT,async()=>{
     console.log(`server listening at ${PORT}`)
+   
     await connectToDb()
     console.log(`succesfully connected to db`)
+    
 })
